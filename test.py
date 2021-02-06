@@ -1,5 +1,3 @@
-import pytest
-from _pytest import monkeypatch
 from CoffeeMachine import CoffeeMachine
 
 
@@ -21,19 +19,19 @@ def test_is_coin_enough_surplus_change(monkeypatch):
     assert coffee_machine.is_coin_enough("espresso") is True
 
 
-def test_is_resources_enough_false(monkeypatch):
+def test_is_resources_enough_false():
     coffee_machine = CoffeeMachine()
     coffee_machine.resources = dict(water=0, milk=0, coffee=0, profit=0)
     assert coffee_machine.is_resources_enough("latte") is False
 
 
-def test_is_resources_enough_true(monkeypatch):
+def test_is_resources_enough_true():
     coffee_machine = CoffeeMachine()
     coffee_machine.resources = dict(water=300, milk=1200, coffee=240, profit=0)
     assert coffee_machine.is_resources_enough("latte") is True
 
 
-def test_use_resources(monkeypatch):
+def test_use_resources():
     coffee_machine = CoffeeMachine()
     coffee_machine.resources = dict(water=300, milk=200, coffee=100, profit=0)
     coffee_machine.use_resources("cappuccino")

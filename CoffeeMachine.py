@@ -39,6 +39,11 @@ class CoffeeMachine:
         return prompt_input
 
     def is_resources_enough(self, input_drink):
+        """
+        :type input_drink: User requested drink
+        Return True if machine has sufficient resource to make drink, false if
+        resource is insufficient
+        """
         drink = self.MENU.get(input_drink)
         if drink:
             for ingredient, value in drink.get("ingredients").items():
@@ -49,6 +54,10 @@ class CoffeeMachine:
         return True
 
     def is_coin_enough(self, drink):
+        """
+        :type drink: User requested drink
+        Return True when money is sufficient, false if money is sufficient
+        """
         input_coins = input("Please insert coins.\n").split(',')
         coins = {
             "quarters": 0.25,
@@ -62,7 +71,7 @@ class CoffeeMachine:
             total_coin += int(amount) * coins.get(coin, 0)
         round(total_coin, 2)
 
-        drink_cost = self.MENU["espresso"]["cost"]
+        drink_cost = self.MENU[drink]["cost"]
         if total_coin == drink_cost:
             self.resources["profit"] += drink_cost
             return True
@@ -76,22 +85,23 @@ class CoffeeMachine:
             return False
 
     def make_coffee(self, drink):
-        drink_name = "espresso"
+        """ Make drink requested by user """
         if self.is_resources_enough(drink):
             if self.is_coin_enough(drink):
                 self.use_resources(drink)
-                print('Here is your', drink, '.Enjoy!\n')
+                print('Here is your', drink, '☕.Enjoy!\n')
 
         else:
             return
 
     def turn_on(self):
+        """Turn on the coffee machine and prompt user for input"""
         # Ensure user inputs an item that's in our menu
         prompt_input = self.prompt_user_input()
         while prompt_input in self.MENU:
-            if (prompt_input == "off"):
+            if prompt_input == "off":
                 exit()
-            elif (prompt_input == "report"):
+            elif prompt_input == "report":
                 self.report()
             else:
                 self.make_coffee(prompt_input)
@@ -101,10 +111,12 @@ class CoffeeMachine:
         print("Sorry that input is not supported")
 
     def use_resources(self, drink):
+        """Deduct machine resources to make the requested drink"""
         for ingredient, amount in self.MENU[drink]["ingredients"].items():
             self.resources[ingredient] -= amount
 
     def report(self):
+        """Report current available resources in the machine and current profit"""
         for resource, value in self.resources.items():
             print(resource, ':', value, 'ml')
 
@@ -114,8 +126,5 @@ def main():
     coffee_machine.turn_on()
 
 
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     main()
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
