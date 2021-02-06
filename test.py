@@ -31,3 +31,13 @@ def test_is_resources_enough_true(monkeypatch):
     coffee_machine = CoffeeMachine()
     coffee_machine.resources = dict(water=300, milk=1200, coffee=240, profit=0)
     assert coffee_machine.is_resources_enough("latte") is True
+
+
+def test_use_resources(monkeypatch):
+    coffee_machine = CoffeeMachine()
+    coffee_machine.resources = dict(water=300, milk=200, coffee=100, profit=0)
+    coffee_machine.use_resources("cappuccino")
+
+    assert coffee_machine.resources["water"] == 50
+    assert coffee_machine.resources["milk"] == 100
+    assert coffee_machine.resources["coffee"] == 76

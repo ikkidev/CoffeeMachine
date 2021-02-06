@@ -1,11 +1,3 @@
-def check_transaction():
-    pass
-
-
-def make_coffee():
-    pass
-
-
 class CoffeeMachine:
     MENU = {
         "espresso": {
@@ -46,14 +38,18 @@ class CoffeeMachine:
         prompt_input = input("What would you like? (espresso/latte/cappuccino):")
         return prompt_input
 
-    def switch(self, prompt_input):
-        # Ensure user inputs an item that's in our menu
-        while prompt_input in self.MENU:
-            getattr(self, prompt_input, lambda: "off")()
-            prompt_input = self.prompt_user_input()
+    def is_resources_enough(self, input_drink):
+        drink = self.MENU.get(input_drink)
+        if drink:
+            for ingredient, value in drink.get("ingredients").items():
+                if self.resources.get(ingredient) < value:
+                    print('Sorry there is not enough ', ingredient, '.')
+                    return False
+
+        return True
 
     def is_coin_enough(self, drink):
-        input_coins = input("Please insert coins").split(',')
+        input_coins = input("Please insert coins.\n").split(',')
         coins = {
             "quarters": 0.25,
             "dimes": 0.10,
@@ -79,42 +75,43 @@ class CoffeeMachine:
             print("Sorry that's not enough money. Money refunded")
             return False
 
-    def is_resources_enough(self, input_drink):
-        drink = self.MENU.get(input_drink)
-        if drink:
-            for ingredient, value in drink.get("ingredients").items():
-                if self.resources.get(ingredient) < value:
-                    print('Sorry there is not enough ', ingredient, '.')
-                    return False
-
-        return True
-
-    def espresso(self):
+    def make_coffee(self, drink):
         drink_name = "espresso"
-        if self.is_resources_enough(drink_name):
-            coin = self.is_coin_enough(drink_name)
+        if self.is_resources_enough(drink):
+            if self.is_coin_enough(drink):
+                self.use_resources(drink)
+                print('Here is your', drink, '.Enjoy!\n')
 
         else:
             return
 
-    def latte(self):
-        pass
+    def turn_on(self):
+        # Ensure user inputs an item that's in our menu
+        prompt_input = self.prompt_user_input()
+        while prompt_input in self.MENU:
+            if (prompt_input == "off"):
+                exit()
+            elif (prompt_input == "report"):
+                self.report()
+            else:
+                self.make_coffee(prompt_input)
 
-    def cappucino(self):
-        pass
+            prompt_input = self.prompt_user_input()
+
+        print("Sorry that input is not supported")
+
+    def use_resources(self, drink):
+        for ingredient, amount in self.MENU[drink]["ingredients"].items():
+            self.resources[ingredient] -= amount
 
     def report(self):
         for resource, value in self.resources.items():
             print(resource, ':', value, 'ml')
 
-    def off(self):
-        exit()
-
 
 def main():
     coffee_machine = CoffeeMachine()
-    prompt_input = coffee_machine.prompt_user_input()
-    coffee_machine.switch(prompt_input)
+    coffee_machine.turn_on()
 
 
 # Press the green button in the gutter to run the script.
